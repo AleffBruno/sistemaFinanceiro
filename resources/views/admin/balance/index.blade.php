@@ -7,22 +7,22 @@
     
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="">Dashboard</a></li>
-        <li class="breadcrumb-item active"><a href="">Saldo</a></li>        
+        <li><a href="">Dashboard</a></li>
+        <li><a href="">Saldo</a></li>        
     </ol>
 @stop
 
 @section('content')
     <div class="box">
         <div class="box-header">
-            <a href="" class="btn btn-primary"><i class="fa fa-cart-plus" aria-hidden=true></i> Recarregar</a>
+            <a href="{{route('balance.deposit')}}" class="btn btn-primary"><i class="fa fa-cart-plus" aria-hidden=true></i> Recarregar</a>
             <a href="" class="btn btn-danger"><i class="fa fa-arrow-down" aria-hidden=true></i> Sacar</a>
-
         </div>
+
         <div class="box-body">
             <div class="small-box bg-green">
                 <div class="inner">
-                <h3>R$ 90,00</h3>
+                <h3>R$ {{$amount}}</h3>
 
                 </div>
                 <div class="icon">
