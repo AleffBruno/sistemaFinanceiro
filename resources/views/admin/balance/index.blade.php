@@ -20,6 +20,9 @@
         </div>
 
         <div class="box-body">
+
+            @include('admin.includes.alerts')
+            
             <div class="small-box bg-green">
                 <div class="inner">
                 <h3>R$ {{$amount}}</h3>
