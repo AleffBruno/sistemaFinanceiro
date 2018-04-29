@@ -16,7 +16,7 @@ class Balance extends Model
         $totalBefore = $this->amount ? $this->amount : 0;
         // perhaps needs to use "number_format";
         $this->amount += $value;
-        $result = $this->save();
+        $deposit = $this->save();
 
         $historic = auth()->user()->historics()->create([
                         'type'          => 'I',
@@ -28,7 +28,7 @@ class Balance extends Model
         //Achei uma pegadinha, se der erro ao inserir o historico, ainda é feito o insert em "balance"
 
 
-        if ($result && $historic)
+        if ($deposit && $historic)
         {
             DB::commit();
 
@@ -45,11 +45,53 @@ class Balance extends Model
                 'message' => 'Falha ao recarregar'
             ];
         }
-
-        
     }
 
+    public function withdraw(float $value) : Array
+    {
+        if($this->amount < $value)
+        {
+            return [
+                'success' => false,
+                'message' => 'Saldo Insuficiente'
+            ];
+        }
 
+        DB::beginTransaction();
+
+        $totalBefore = $this->amount ? $this->amount : 0;
+        // perhaps needs to use "number_format";
+        $this->amount -= $value;
+        $withdraw = $this->save();
+
+        $historic = auth()->user()->historics()->create([
+                        'type'          => 'O',
+                        'amount'        => $value,
+                        'total_before'  => $totalBefore,
+                        'total_after'   => $this->amount,
+                        'date'          => date('Y-m-d')
+                    ]);
+        //Achei uma pegadinha, se der erro ao inserir o historico, ainda é feito o insert em "balance"
+
+
+        if ($withdraw && $historic)
+        {
+            DB::commit();
+
+            return [
+                'success' => true,
+                'message' => 'Sucesso ao retirar'
+            ];
+        } else {
+
+            DB::rollback();
+
+            return [
+                'success' => false,
+                'message' => 'Falha ao retirar'
+            ];
+        }
+    }
 
 }
 
