@@ -39,4 +39,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Historic::class);
     }
+
+    //this could be improved as passing email/cpf or another unique value
+    public function getSender($sender)
+    {
+        return 
+        $this->where('name','LIKE',"%$sender%")
+            ->orWhere('email',$sender)//->toSql() , para poder ver a query
+            ->get()
+            ->first();
+    }
 }

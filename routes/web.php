@@ -2,6 +2,7 @@
 
 Route::group(['middleware' => ['auth'],'namespace'=>'Admin','prefix'=>'admin'],function(){
 
+    Route::post('transfer','BalanceController@transferStore')->name('transfer.store');
     Route::post('confirm-transfer','BalanceController@confirmTransfer')->name('confirm.transfer');
     Route::get('transfer','BalanceController@transfer')->name('balance.transfer');
 
