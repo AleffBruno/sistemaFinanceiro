@@ -77,11 +77,39 @@ class BalanceController extends Controller
                 ->with('error','Nao pode transferir para você mesmo');
         }
 
-        return view('admin.balance.transfer-confirm',compact('sender'));
+        $balance = auth()->user()->balance;
+
+        return view('admin.balance.transfer-confirm',compact('sender','balance'));
     }
 
-    public function transferStore(Request $request)
+    public function transferStore(MoneyValidationFormRequest $request,User $user)
     {
-        dd($request->all());
+        if(!$sender = $user->find($request->sender_id))
+        {
+            return redirect()
+                ->route('balance.transfer')
+                ->with('error','Recebedor nao encontrado');
+        }
+        
+        $balance = auth()->user()->balance()->firstOrCreate([]); //aqui eu recupero, se  nao existe eu crio o primeiro
+        $response = $balance->transfer($request->value,$sender);
+
+        if($response['success'])
+        {
+            return redirect()
+                ->route('admin.balance')
+                ->with('success',$response['message']);
+        }
+
+        return redirect()
+            ->route('balance.transfer')
+            ->with('error',$response['message']);
+    }
+
+    public function historic()
+    {
+        $historics = auth()->user()->historics;
+
+        return view ('admin.balance.historics',compact('historics'));
     }
 }

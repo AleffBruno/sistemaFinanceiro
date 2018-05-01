@@ -25,6 +25,8 @@
 
             <!-- sender received from balance -->
             <p><strong>Recebedor: </strong>{{$sender->name}}</p>
+            <p><strong>Seu saldo atual: </strong>{{$balance->amount}}</p>
+
 
             <form method="POST" action="{{route('transfer.store')}}">
                 {!! csrf_field() !!}
@@ -32,7 +34,7 @@
                 <input name="sender_id"type="hidden" value="{{$sender->id}}">
 
                 <div class="form-group">
-                    <input name="balance" class="form-control" type="text" placeholder="Valor">
+                    <input name="value" class="form-control" type="text" placeholder="Valor">
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-success">Transferir</button>
