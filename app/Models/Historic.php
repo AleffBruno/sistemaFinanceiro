@@ -38,6 +38,12 @@ class Historic extends Model
         return $types[$type];
     }
 
+    //hint > scope is a "special word" to do queries that can be used in a lot places
+    public function scopeUserAuth($query)
+    {
+        return $query->where('user_id',auth()->user()->id);
+    }
+
     public function user()
     {
         // caution on the joke, here NOT 'hasOne' USER, but 'belongsToOne'
@@ -67,6 +73,9 @@ class Historic extends Model
             if(isset($data['type']))
                 $query->where('type',$data['type']);
         })
+        //->where('user_id',auth()->user()->id)
+        ->userAuth()
+        ->with(['userSender'])
         ->paginate($totalPage);
     }
 

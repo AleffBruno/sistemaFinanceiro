@@ -21,6 +21,7 @@ Route::group(['middleware' => ['auth'],'namespace'=>'Admin','prefix'=>'admin'],f
 
 });
 
+Route::get('meu-perfil','Admin\UserController@profile')->name('profile')->middleware('auth');
 
 Route::get('/','site\SiteController@index')->name('home');
 
