@@ -7,9 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Balance;
 use App\Http\Requests\MoneyValidationFormRequest;
 use App\User;
+use App\Models\Historic;
 
 class BalanceController extends Controller
 {
+    private $totalPage = 2;
+
     public function index()
     {
         $balance = auth()->user()->balance;
@@ -106,10 +109,26 @@ class BalanceController extends Controller
             ->with('error',$response['message']);
     }
 
-    public function historic()
+    public function historic(Historic $historic)
     {
-        $historics = auth()->user()->historics;
+        //FUCKING IMPORTANT !!! WHEN USE RELATIONSHIP AND NEEDS GET ANOTHERS RELATIONS, GET ALL USING "WITH"
+        // DON'T LOOP QUERIES ( eg on some view : {{$historic->user()->get()->first()->name)}} ) << WRONG
+        //$historics = auth()->user()->historics()->with(['userSender'])->get();
+        $historics = auth()->user()->historics()->with(['userSender'])->paginate($this->totalPage);
 
-        return view ('admin.balance.historics',compact('historics'));
+        $types = $historic->type();
+
+        return view ('admin.balance.historics',compact('historics','types'));
+    }
+
+    public function searchHistoric(Request $request,Historic $historic)
+    {
+        $dataForm = $request->except('_token');
+
+        $historics = $historic->search($dataForm,$this->totalPage);
+
+        $types = $historic->type();
+
+        return view ('admin.balance.historics',compact('historics','types','dataForm'));
     }
 }
